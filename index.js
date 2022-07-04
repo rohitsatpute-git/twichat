@@ -160,11 +160,20 @@ app.post('/signup',async (req,res)=>{
 
 app.post('/newtweets/:id',async(req,res)=>{
     var {s}=req.body;
+    if(s=='') {
+        const {id}=req.params;
+        const user=await Profile.findOne({id:id})
+        nametweet='india';
+        tweets=await gettweets(nametweet);
+        res.render('home',{user,id,tweets});
+    }
+    else{
     const {id}=req.params;
     const user=await Profile.findOne({id:id})
     nametweet=s;
     tweets=await gettweets(nametweet);
     res.render('home',{user,id,tweets})
+    }
 })
 
 app.get('/addfriend/:id',async(req,res)=>{
