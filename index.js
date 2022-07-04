@@ -1,14 +1,12 @@
 const express=require('express');
 const app=express();
 const session=require('express-session')
-const fetch=require('node-fetch')
 const path=require('path')
 const bcrypt=require('bcryptjs');
 const mongoose=require('mongoose');
 const methodoverride=require('method-override');
 const multer=require('multer');
 const flash=require('connect-flash');
-
 
 var Twit=require('twit');
 
@@ -66,7 +64,6 @@ app.use(session({
 const Storage=multer.diskStorage({
     destination:"./public/uploads",
     filename:(req,file,cb)=>{
-        console.log(Date.now()+path.extname(file.originalname))
         cb(null,Date.now() +path.extname(file.originalname));
     }
 })
@@ -88,9 +85,7 @@ app.get('/logout/:id',async(req,res)=>{
 })
 app.get('/home/:id',async(req,res)=>{
     if(req.session.userid){
-        
         var {id}=req.params;
-        console.log(id)
         var user;
         const users=await Profile.find({})
         for(let u of users){
