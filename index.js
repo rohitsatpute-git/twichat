@@ -7,7 +7,7 @@ const mongoose=require('mongoose');
 const methodoverride=require('method-override');
 const multer=require('multer');
 const flash=require('connect-flash');
-
+require('dotenv').config();
 var Twit=require('twit');
 
 
@@ -307,6 +307,6 @@ app.get('/viewdp/:img/:id',async(req,res)=>{
     else res.redirect('/login')
 })
 
-app.listen(3000,()=>{
+app.listen(process.env.PORT || 3000,()=>{
     console.log("listening on port 3000");
 })
