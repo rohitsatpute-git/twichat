@@ -42,7 +42,7 @@ T.get('search/tweets',{q:nametweet ,count:1000, lang:'en',result_type:'recent',t
 
 
 
-mongoose.connect('mongodb://localhost:27017/quizapp');
+mongoose.connect('mongodb+srv://admin-rohit:Test1234@cluster0.zpcsj.mongodb.net/quizapp');
 app.set('view engine','ejs');
 app.use(flash());
 app.use(express.urlencoded({extended:true}));
@@ -307,6 +307,11 @@ app.get('/viewdp/:img/:id',async(req,res)=>{
     else res.redirect('/login')
 })
 
-app.listen(process.env.PORT || 3000,()=>{
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
+app.listen(port,()=>{
     console.log("listening on port 3000");
 })
