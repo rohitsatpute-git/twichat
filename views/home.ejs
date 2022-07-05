@@ -11,7 +11,7 @@
   <%= user.username %> 
           </a>
   
-  <div id="newdash" style="background-color: rgb(107, 103, 98); display:none ; position: absolute; margin: 0 auto; right: 0%; top: 0%; text-align: center; height: 5rem; width: 10%; border:2px solid rgb(56, 44, 147)">
+  <div id="newdash" style="background-color: rgb(107, 103, 98); display:none ; position: absolute; margin: 0 auto; right: 0%; top: 0%; text-align: center; height: 5rem; width: 10%;">
   <a href="/viewdp/<%= user.img.src %>/<%= id %>  " style="color: antiquewhite; display:block ;">view</a>
   <form  action="/setdp/<%=id %> " method="post" enctype="multipart/form-data">
   <label style="color: antiquewhite; cursor:pointer ;" for="img">Set profile picture</label>
@@ -21,10 +21,10 @@
    
 
   <div class="input-group" style=" display: flex;  justify-content: center;">
-    <form action="/newtweets/<%= id %> " method="post">
-    <div class="form-outline" style="display: flex;">
+    <form action="/newtweets/<%= id %> " method="post" style=" width: 100%;">
+    <div class="form-outline" style="display: flex; width: 100%; justify-content: center;">
       <label class="form-label" for="form1"></label>
-      <input  name="s" type="search" id="form1" class="form-control" placeholder="search your favourite tweets"/>
+      <input style=" width: 30%;" name="s" type="search" id="form1" class="form-control" placeholder="search your favourite tweets"/>
       <button type="submit" class="btn btn-primary"> <i class="fas fa-search"></i></button>
     </div>
     </form>
