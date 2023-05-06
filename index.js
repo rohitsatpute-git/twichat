@@ -7,7 +7,7 @@ const mongoose=require('mongoose');
 const methodoverride=require('method-override');
 const multer=require('multer');
 const flash=require('connect-flash');
-require('dotenv').config();
+
 var Twit=require('twit');
 
 
@@ -52,13 +52,8 @@ app.use(session({
     secret:'notagoodsecret',
     resave:false,
     saveUninitialized:false
-}))
+}));
 
-//api key iCAbgcUEzonxVYa7XkkghepKF
-//api secret key ZgGeV6GGPfSC0SWj3fMc8Ym3IJAdJXXimtepG2GFI9zeLi2knI
-//token key 737638593565450240-RC5mWAONZdrood4W568N24opvnOtyli
-//token secret NhYHnlRZhM8WXQkfZrPn57MH47HhBfTCVToXQRszmAhSl
-//bearer token AAAAAAAAAAAAAAAAAAAAALdieQEAAAAA88dYK5FD2fNxvX0aQh%2BgRDpcnS8%3DfAI9ag7dqqSMzxQto0iqP622IwTVodZXpQpRko1kqmlSCA2jit
 
 
 const Storage=multer.diskStorage({
@@ -316,11 +311,9 @@ app.get('/viewdp/:img/:id',async(req,res)=>{
     else res.redirect('/login')
 })
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000;
-}
+let port = 3000;
+
 
 app.listen(port,()=>{
     console.log("listening on port 3000");
-})
+});
