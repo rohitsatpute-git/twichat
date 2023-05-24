@@ -7,21 +7,18 @@ const mongoose=require('mongoose');
 const methodoverride=require('method-override');
 const multer=require('multer');
 const flash=require('connect-flash');
+const credentails=require('./credential.js');
 
 var Twit=require('twit');
 
 
-const consumer_key='iCAbgcUEzonxVYa7XkkghepKF';
-const consumer_secret='ZgGeV6GGPfSC0SWj3fMc8Ym3IJAdJXXimtepG2GFI9zeLi2knI';
-const access_token_key='737638593565450240-RC5mWAONZdrood4W568N24opvnOtyli';
-const access_token_secret='NhYHnlRZhM8WXQkfZrPn57MH47HhBfTCVToXQRszmAhSl';
 
 
 var T=new Twit({
-    consumer_key:consumer_key,
-    consumer_secret:consumer_secret,
-    access_token:access_token_key,
-    access_token_secret:access_token_secret
+    consumer_key:credentails.consumer_key,
+    consumer_secret:credentails.consumer_secret,
+    access_token:credentails.access_token_key,
+    access_token_secret: credentails.access_token_secret
 })
 var tweets;
 
@@ -31,9 +28,11 @@ const gettweets=(nametweet)=>{
 
 T.get('search/tweets',{q:nametweet ,count:1000, lang:'en',result_type:'recent',tweet_mode:'extended',exclude_replies:true,exclude:'retweets'},function(err,data,response){
  if(err){
-    reject(err);
- }
+    console.log('error',err);
+ }else{
+    
     resolve(data.statuses)
+ }
 })
 })
 }
@@ -105,11 +104,12 @@ app.post('/home',async(req,res)=>{
             found=f;
         }
         }
-
+    
     if(ok===0){
          res.render('login',{message:"Invalid username/password"})
     }
     else {
+        
         user=found;
         const id=found.id;
         req.session.userid=id;
