@@ -143,19 +143,19 @@ app.post('/home',async(req,res)=>{
     else {
 
         var ress=await Counter.find({});
-        var activeusers=ress[0].activeusers;
-        await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers+1});
-        const userAgent=req.headers['user-agent'];
-        const isPhone=userAgent.includes('Mobile');
-        if(isPhone) {
-            await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers-1});
-        }
+        var activeusers=ress[0].activeusers+1;
+        await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers});
+        // const userAgent=req.headers['user-agent'];
+        // const isPhone=userAgent.includes('Mobile');
+        // if(isPhone) {
+        //     await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers});
+        // }
         user=found;
         const id=found.id;
         req.session.userid=id;
         var nametweet="india";
         tweets=await gettweets(nametweet);
-        res.render('home',{id,user,tweets,activeusers:activeusers+1});
+        res.render('home',{id,user,tweets,activeusers:activeusers});
         }
     }
 })
