@@ -145,7 +145,11 @@ app.post('/home',async(req,res)=>{
         var ress=await Counter.find({});
         var activeusers=ress[0].activeusers;
         await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers+1});
-        
+        const userAgent=req.headers['user-agent'];
+        const isPhone=userAgent.includes('Mobile');
+        if(isPhone) {
+            await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers-1});
+        }
         user=found;
         const id=found.id;
         req.session.userid=id;
