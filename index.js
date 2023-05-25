@@ -72,7 +72,7 @@ app.get('/login',async (req,res)=>{
         var ress=await Counter.find({});
         var totalviews=ress[0].totalviews;
         await Counter.updateOne({_id:ress[0].id},{totalviews:totalviews+1});
-    res.render('login',{message:"",totalviews:totalviews});
+        res.render('login',{message:"",totalviews:totalviews+1});
 })
 app.get('/logout/:id',async(req,res)=>{
     var ress=await Counter.find({});
@@ -93,9 +93,13 @@ app.get('/home/:id',async(req,res)=>{
         }
         var nametweet="india";
         tweets=await gettweets(nametweet);
-        res.render('home',{id,user,tweets});
+        var ress=await Counter.find({});
+        var activeusers=ress[0].activeusers;
+        res.render('home',{id,user,tweets,activeusers});
     }
-    else res.redirect('login')
+    else {
+        res.redirect('/login');
+    }
 })
 app.post('/home',async(req,res)=>{
     if(req.session.userid){
@@ -131,7 +135,10 @@ app.post('/home',async(req,res)=>{
         }
     
     if(ok===0){
-         res.render('login',{message:"Invalid username/password"})
+        var ress=await Counter.find({});
+        var totalviews=ress[0].totalviews;
+        await Counter.updateOne({_id:ress[0].id},{totalviews:totalviews+1,totalviews});
+        res.render('login',{message:"Invalid username/password",totalviews})
     }
     else {
 
@@ -144,7 +151,7 @@ app.post('/home',async(req,res)=>{
         req.session.userid=id;
         var nametweet="india";
         tweets=await gettweets(nametweet);
-        res.render('home',{id,user,tweets,activeusers});
+        res.render('home',{id,user,tweets,activeusers:activeusers+1});
         }
     }
 })
@@ -179,7 +186,9 @@ app.post('/signup',async (req,res)=>{
     user=user[0];
     var nametweet="india";
     tweets=await gettweets(nametweet);
-    res.render('home',{id,user,tweets});
+    var ress=await Counter.find({});
+    var activeusers=ress[0].activeusers;
+    res.render('home',{id,user,tweets,activeusers});
     }
 })
 
@@ -197,7 +206,9 @@ app.post('/newtweets/:id',async(req,res)=>{
     const user=await Profile.findOne({id:id})
     nametweet=s;
     tweets=await gettweets(nametweet);
-    res.render('home',{user,id,tweets})
+    var ress=await Counter.find({});
+    var activeusers=ress[0].activeusers;
+    res.render('home',{user,id,tweets,activeusers})
     }
 })
 
@@ -213,7 +224,12 @@ app.get('/addfriend/:id',async(req,res)=>{
     }
     res.render('userlist',{id,users,friends,user});
 }
-else res.render('login',{message:""})
+else {
+    var ress=await Counter.find({});
+    var totalviews=ress[0].totalviews;
+    await Counter.updateOne({_id:ress[0].id},{totalviews:totalviews+1});
+    res.render('login',{message:"",totalviews:totalviews});
+}
 })
 
 app.post('/:id/add/:toad',async(req,res)=>{
@@ -230,7 +246,7 @@ app.post('/:id/add/:toad',async(req,res)=>{
     res.render('userlist',{id,users,friends,user});
 
    }
-   else res.redirect('login')
+   else res.redirect('/login')
 })
 
 app.delete('/:id/remove/:todel',async(req,res)=>{
@@ -246,7 +262,7 @@ app.delete('/:id/remove/:todel',async(req,res)=>{
     }
     res.render('userlist',{id,users,friends,user});
     }
-    else res.redirect('login')})
+    else res.redirect('/login')})
 
 app.get('/msg/:id',async(req,res)=>{
     if(req.session.userid){
@@ -260,7 +276,7 @@ app.get('/msg/:id',async(req,res)=>{
     }
     res.render('allchats',{id,users,chatsid,chats,user})
     }
-    else res.redirect('login')
+    else res.redirect('/login')
 })
 
 app.get('/chats/:id/:fid',async(req,res)=>{
@@ -274,7 +290,7 @@ app.get('/chats/:id/:fid',async(req,res)=>{
     }
     res.render('chats',{chatary,id,fid,user});
 }
-else res.redirect('login')
+else res.redirect('/login')
 })
 
 app.patch('/:id/send/:fid',async(req,res)=>{
@@ -316,7 +332,7 @@ app.patch('/:id/send/:fid',async(req,res)=>{
 
     res.render('chats',{chatary,id,fid,user})
 }
-else res.redirect('login')
+else res.redirect('/login')
 })
 
 app.post('/setdp/:id',upload.single('img'),async(req,res)=>{
@@ -327,7 +343,9 @@ app.post('/setdp/:id',upload.single('img'),async(req,res)=>{
     const user=await Profile.findById(id)
     var nametweet="india";
     tweets=await gettweets(nametweet);
-    res.render('home',{user,id,tweets})
+    var ress=await Counter.find({});
+    var activeusers=ress[0].activeusers;
+    res.render('home',{user,id,tweets,activeusers})
     }
     else res.redirect('/login');
 })
