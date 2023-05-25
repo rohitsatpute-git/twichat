@@ -8,17 +8,16 @@ const methodoverride=require('method-override');
 const multer=require('multer');
 const flash=require('connect-flash');
 const credentails=require('./credential.js');
+const Counter=require('./models/counter.js');
+const Profile=require('./models/profiles');
 
 var Twit=require('twit');
-
-
-
 
 var T=new Twit({
     consumer_key:credentails.consumer_key,
     consumer_secret:credentails.consumer_secret,
-    access_token:credentails.access_token_key,
-    access_token_secret: credentails.access_token_secret
+    access_token:credentails.access_token,
+    access_token_secret:credentails.access_token_secret
 })
 var tweets;
 
@@ -66,14 +65,19 @@ const upload=multer({
     storage:Storage
 })
 
-const Profile=require('./models/profiles');
 
 
 
-app.get('/login',(req,res)=>{
-    res.render('login',{message:""});
+app.get('/login',async (req,res)=>{
+        var ress=await Counter.find({});
+        var totalviews=ress[0].totalviews;
+        await Counter.updateOne({_id:ress[0].id},{totalviews:totalviews+1});
+    res.render('login',{message:"",totalviews:totalviews});
 })
 app.get('/logout/:id',async(req,res)=>{
+    var ress=await Counter.find({});
+    var activeusers=ress[0].activeusers;
+    await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers-1});
     req.session.destroy();
     res.redirect('/login')
 })
@@ -94,6 +98,27 @@ app.get('/home/:id',async(req,res)=>{
     else res.redirect('login')
 })
 app.post('/home',async(req,res)=>{
+    if(req.session.userid){
+        var ress=await Counter.find({});
+        var activeusers=ress[0].activeusers;
+        var found=await Profile.find({});
+        const {username,password}=req.body;
+        var ok=0;
+        var user;
+        for(let f of found){
+            if(f.username==username && await bcrypt.compare(password,f.password)){
+                ok=1;
+               found=f;
+            }
+        }
+        user=found;
+        const id=found.id;
+        req.session.userid=id;
+        var nametweet="india";
+        tweets=await gettweets(nametweet);
+        res.render('home',{id,user,tweets,activeusers});
+
+    }else{
     const {username,password}=req.body;
     var found=await Profile.find({});
     var ok=0;
@@ -109,14 +134,19 @@ app.post('/home',async(req,res)=>{
          res.render('login',{message:"Invalid username/password"})
     }
     else {
+
+        var ress=await Counter.find({});
+        var activeusers=ress[0].activeusers;
+        await Counter.updateOne({_id:ress[0].id},{activeusers:activeusers+1});
         
         user=found;
         const id=found.id;
         req.session.userid=id;
         var nametweet="india";
         tweets=await gettweets(nametweet);
-        res.render('home',{id,user,tweets});
+        res.render('home',{id,user,tweets,activeusers});
         }
+    }
 })
 
 app.get('/signup',(req,res)=>{
